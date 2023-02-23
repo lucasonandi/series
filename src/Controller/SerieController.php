@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,22 +53,25 @@ class SerieController extends AbstractController
     {
 
         $serie = new Serie();
+        //creation de'une instance de form lie a une instance de serie
 
-        $serie
-            ->setName("Le magicien")
-            ->setBackdrop("backdrop.png")
-            ->setDateCreated(new \DateTime())
-            ->setGenres("Comedy")
-            ->setFirstAirDate(new \DateTime('2022-02-02'))
-            ->setLastAirDate(new \DateTime("-6 month"))
-            ->setPopularity(850.52)
-            ->setPoster("poster.png")
-            ->setTmdbId(123456)
-            ->setVote(8.5)
-            ->setStatus("Ended");
+        $serieForm = $this->createForm(SerieType::class, $serie);
 
-        $entityManager->persist($serie);
-        $entityManager->flush();
+//        $serie
+//            ->setName("Le magicien")
+//            ->setBackdrop("backdrop.png")
+//            ->setDateCreated(new \DateTime())
+//            ->setGenres("Comedy")
+//            ->setFirstAirDate(new \DateTime('2022-02-02'))
+//            ->setLastAirDate(new \DateTime("-6 month"))
+//            ->setPopularity(850.52)
+//            ->setPoster("poster.png")
+//            ->setTmdbId(123456)
+//            ->setVote(8.5)
+//            ->setStatus("Ended");
+//
+//        $entityManager->persist($serie);
+//        $entityManager->flush();
 //        dump($serie);
 //
 //        $serieRepository->save($serie, true);
@@ -77,13 +81,15 @@ class SerieController extends AbstractController
 //        $serieRepository->save($serie, true);
 //
 //        dump($serie);
-
-        $serieRepository->remove($serie, true);
-        dump($serie);
+//
+//        $serieRepository->remove($serie, true);
+//        dump($serie);
 
 
         //TODO recuperer la liste des series en BDD
-        return $this->render('serie/add.html.twig');
+        return $this->render('serie/add.html.twig',[
+            'serieForm' => $serieForm->createView()
+        ]);
     }
 
 }
