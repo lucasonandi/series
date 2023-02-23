@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 #[Route ('serie', name: 'serie_')]
 class SerieController extends AbstractController
@@ -21,8 +22,10 @@ class SerieController extends AbstractController
        // $series = $serieRepository->findAll();
 
         //$series = $serieRepository->findBy(["status" => "ended"], ["popularity"=>'DESC'], 10);
+        //$series = $serieRepository->findByStatus("ended");
+        //$series = $serieRepository->findBy([],["vote"=>"DESC"], 50);
+        $series = $serieRepository->findBestSeries();
 
-        $series = $serieRepository->findBy([],["vote"=>"DESC"], 50);
 
         dump($series);
         return $this->render('serie/list.html.twig', [
@@ -35,6 +38,11 @@ class SerieController extends AbstractController
     {
         $serie = $serieRepository->find($id);
         dump($id);
+
+        if (!$serie){
+            //lance une error 404 si la serie n'existe pas
+            throw $this->createNotFoundException("Oops ! serie not found !");
+        }
 
         //TODO recupereration des infos de la serie en BDD
         return $this->render('serie/show.html.twig', ['serie' =>$serie]);
