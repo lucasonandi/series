@@ -37,10 +37,14 @@ class SerieType extends AbstractType
                 ]
             ])
             ->add('firstAirDate', DateType::class,[
-                'label'=> 'First air date : '
+                'label'=> 'First air date : ',
+                'html5' => true,
+                'widget' => 'single_text'
             ])
             ->add('lastAirDate', DateType::class, [
-                'label'=>'Last air date: '
+                'label'=>'Last air date: ',
+                'html5' => true,
+                'widget' => 'single_text'
             ])
             ->add('backdrop')
             ->add('poster')
@@ -52,6 +56,7 @@ class SerieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Serie::class,
+            'required'=> false
         ]);
     }
 }

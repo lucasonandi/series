@@ -6,7 +6,9 @@ use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use function PHPUnit\Framework\throwException;
@@ -49,7 +51,7 @@ class SerieController extends AbstractController
         return $this->render('serie/show.html.twig', ['serie' =>$serie]);
     }
     #[Route('/add', name: 'add')]
-    public function add(SerieRepository $serieRepository, EntityManagerInterface $entityManager): Response
+    public function add(SerieRepository $serieRepository, Request $request,EntityManagerInterface $entityManager): Response
     {
 
         $serie = new Serie();
@@ -57,6 +59,23 @@ class SerieController extends AbstractController
 
         $serieForm = $this->createForm(SerieType::class, $serie);
 
+        //metode qui extrait les elements du formulaire de la requete
+        $serieForm ->handleRequest($request);
+
+
+        if ($serieForm->isSubmitted() && $serieForm->isValid()){
+            //sauvegarde en BDD la nouvelle serie
+            $serieRepository->save($serie, true);
+
+            $this->addFlash("success", "Serie added !");
+
+            //redirige vers la page de detail de la serie
+            return $this ->redirectToRoute('serie_show', ['id' => $serie->getId()]);
+
+        }
+
+
+        dump($serie);
 //        $serie
 //            ->setName("Le magicien")
 //            ->setBackdrop("backdrop.png")
