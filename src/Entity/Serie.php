@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 
 #[ORM\HasLifecycleCallbacks]
@@ -26,7 +26,7 @@ class Serie
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 3000,
-        maxMessage: "Maximum 255 characters please")]
+        maxMessage: "Maximum 3000 characters please")]
     private ?string $overview = null;
 
     #[ORM\Column(length: 50)]
