@@ -16,8 +16,8 @@ use function PHPUnit\Framework\throwException;
 #[Route ('serie', name: 'serie_')]
 class SerieController extends AbstractController
 {
-    #[Route('/list', name: 'list')]
-    public function list(SerieRepository $serieRepository): Response
+    #[Route('/list/{page}', name: 'list', requirements: ['page' => '\d+'], methods: "GET")]
+    public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
 
         //TODO recuperer la liste des series en BDD
@@ -27,13 +27,22 @@ class SerieController extends AbstractController
         //$series = $serieRepository->findBy(["status" => "ended"], ["popularity"=>'DESC'], 10);
         //$series = $serieRepository->findByStatus("ended");
         //$series = $serieRepository->findBy([],["vote"=>"DESC"], 50);
-        $series = $serieRepository->findBestSeries();
 
+        //nombre de series dans ma table
+        $nbSerieMax = $serieRepository ->count([]);
+        $maxPage = ceil($nbSerieMax / SerieRepository::SERIE_LIMIT);
+        if($page >= 1 && $page <= $maxPage) {
+            $series = $serieRepository->findBestSeries($page);
+        }else{
+            throw $this ->createNotFoundException("Ooops ! Page not found !");
+        }
 
         dump($series);
         return $this->render('serie/list.html.twig', [
             // on envoie les donnees a la vue
-            'series'=>$series
+            'series'=>$series,
+            'currentPage'=> $page,
+            'maxPage' => $maxPage
         ]);
     }
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
